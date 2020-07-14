@@ -186,7 +186,7 @@ class TimeButton extends FunctionButton {
     }
 }
 
-class EqualButton extends FunctionButton (){
+class EqualButton extends FunctionButton {
     constructor(className){
         super(className);
         this.handleClick = function(){
