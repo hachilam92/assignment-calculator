@@ -1,0 +1,80 @@
+.display {
+  background-color: #12283d;
+}
+
+.time, .equal {
+  background-color: #8585f0;
+}
+.time:hover, .equal:hover {
+  background-color: #b2b2f6;
+}
+.time:active, .equal:active {
+  background-color: #5858ea;
+}
+
+.clear {
+  background-color: #ca3d3d;
+}
+.clear:hover {
+  background-color: #d56565;
+}
+.clear:active {
+  background-color: #a72d2d;
+}
+
+.number {
+  background-color: grey;
+}
+.number:hover {
+  background-color: #9a9a9a;
+}
+.number:active {
+  background-color: #676767;
+}
+
+.operator {
+  background-color: #caca3b;
+}
+.operator:hover {
+  background-color: #d5d563;
+}
+.operator:active {
+  background-color: #a5a52d;
+}
+
+.calculator {
+  width: 440px;
+  height: 480px;
+  font-family: "Open Sans", sans-serif;
+  font-family: "Roboto", sans-serif;
+  font-size: 20px;
+  color: white;
+}
+
+.display {
+  width: 100%;
+  text-align: right;
+  padding-right: 5%;
+  font-size: 30px;
+  word-wrap: break-word;
+  word-break: break-all;
+  overflow: hidden;
+}
+
+.clock-icon {
+  width: auto;
+  height: 50%;
+}
+
+.btn {
+  text-align: center;
+  width: 110px;
+  height: 80px;
+  cursor: pointer;
+}
+
+.black {
+  background-color: black;
+}
+
+/*# sourceMappingURL=style.css.map */
