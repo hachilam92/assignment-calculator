@@ -1,9 +1,4 @@
 class Calculator {
-    constructor(){
-        this.valueQueue = [];
-        this.operatorQueue = [];
-        this.clock;
-    }
 
     static operatorQueueUpdate(notation){
         var operator = notation;
@@ -68,6 +63,10 @@ class Calculator {
     }
 }
 
+Calculator.valueQueue = [];
+Calculator.operatorQueue = [];
+Calculator.clock;
+
 
 class Component {
     constructor(className){
@@ -77,12 +76,6 @@ class Component {
 
 
 class Display extends Component {
-    constructor(className){
-        super(className);
-        this.default = '0';
-        this.input = '';
-        this.emptyFlag = true;
-    }
 
     static show(content){
         this.node.innerHTML = content;
@@ -118,6 +111,9 @@ class Display extends Component {
     }
 }
 
+Display.default = '0';
+Display.input = '';
+Display.emptyFlag = true;
 
 class InputButton extends Component {
     constructor(className){
@@ -156,7 +152,7 @@ class OperatorButton extends InputButton {
     constructor(className){
         super(className);
         this.handleClick = function(notation) {
-            if(!Display.prototype.emptyFlag){
+            if(!Display.emptyFlag){
                 valueQueueUpdate();
             }
             if(Calculator.validExpression()){
