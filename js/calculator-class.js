@@ -5,7 +5,7 @@ class Calculator {
         this.clock;
     }
 
-    operatorQueueUpdate(notation){
+    static operatorQueueUpdate(notation){
         var operator = notation;
         operatorQueue.push(operator);
         if(operatorQueue.length >1){
@@ -14,23 +14,23 @@ class Calculator {
         console.log(this.operatorQueue);  // for test
     } 
 
-    operatorQueueReset(){
+    static operatorQueueReset(){
         this.operatorQueue = [];
     }
 
-    valueQueueUpdate(input) {
+    static valueQueueUpdate(input) {
         var operand = parseFloat(input);
         valueQueue.push(operand);
-        Display.prototype.inputReset();
-        Display.prototype.emptyFlagReset();
+        Display.inputReset();
+        Display.emptyFlagReset();
         console.log(this.valueQueue); // for test
     }
 
-    valueQueueReset(){
+    static valueQueueReset(){
         this.valueQueue = [];
     }
 
-    validExpression(){
+    static validExpression(){
         if((this.valueQueue.length >1)&&(this.operatorQueue.length >0)){
             return true;
         }else{
@@ -38,7 +38,7 @@ class Calculator {
         }
     }
 
-    calculate() {
+    static  calculate() {
         var result = 0;
         if(this.validExpression()){
             var operand1 = this.valueQueue[0];
@@ -63,7 +63,7 @@ class Calculator {
         }else{
             this.valueQueueReset();
         }
-        Display.prototype.show(result);
+        Display.show(result);
         this.operatorQueueReset();
     }
 }
@@ -84,11 +84,11 @@ class Display extends Component {
         this.emptyFlag = true;
     }
 
-    show(content){
+    static show(content){
         this.node.innerHTML = content;
     }
 
-    inputUpdate(notation) {
+    static inputUpdate(notation) {
         var addedValue = notation;
         this.input += addedValue;
         if(this.emptyFlag){this.emptyFlag = !this.emptyFlag;}
@@ -96,22 +96,22 @@ class Display extends Component {
         console.log(this.input);       // for test
     }
 
-    inputReset() {
+    static inputReset() {
         this.input = '';
     }
 
-    dropTime(){
-        clearInterval(TimeButton.prototype.clock);
+    static dropTime(){
+        clearInterval(TimeButton.clock);
     }
 
-    emptyFlagReset(){
+    static emptyFlagReset(){
         this.emptyFlag = true;
     }
 
-    clear(){
+    static clear(){
         this.show(this.default);
-        Calculator.prototype.valueQueueReset();
-        Calculator.prototype.operatorQueueReset();
+        Calculator.valueQueueReset();
+        Calculator.operatorQueueReset();
         this.inputReset();
         this.emptyFlagReset();
         this.dropTime();
@@ -146,8 +146,8 @@ class NumberButton extends InputButton {
     constructor(className){
         super(className);
         this.handleClick = function(notation) {
-            Display.prototype.dropTime();
-            Display.prototype.inputUpdate(notation);
+            Display.dropTime();
+            Display.inputUpdate(notation);
         }
     }
 }
@@ -159,9 +159,9 @@ class OperatorButton extends InputButton {
             if(!Display.prototype.emptyFlag){
                 valueQueueUpdate();
             }
-            if(Calculator.prototype.validExpression()){
+            if(Calculator.validExpression()){
                 console.log('calculate');    // for test
-                Calculator.prototype.calculate();
+                Calculator.calculate();
             }
             operatorQueueUpdate(notation); 
         }
@@ -171,7 +171,7 @@ class OperatorButton extends InputButton {
 class ClearButton extends FunctionButton {
     constructor(className){
         super(className);
-        this.handleClick = () => Display.prototype.clear();
+        this.handleClick = () => Display.clear();
     }
 }
 
@@ -180,10 +180,10 @@ class TimeButton extends FunctionButton {
         super(className);
         this.clock;
         this.handleClick = function(){
-            Display.prototype.clear();
+            Display.clear();
             var setTime = function(){
                 var date = new Date();
-                Display.prototype.show(date.toLocaleString());
+                Display.show(date.toLocaleString());
             }
             this.clock = setInterval(setTime, 1000);
         }
@@ -194,8 +194,8 @@ class EqualButton extends FunctionButton (){
     constructor(className){
         super(className);
         this.handleClick = function(){
-            Calculator.prototype.valueQueueUpdate();
-            Calculator.prototype.calculate();
+            Calculator.valueQueueUpdate();
+            Calculator.calculate();
         }
     }
 }
@@ -218,6 +218,6 @@ var subtract = new OperatorButton("subtract");
 var multiply = new OperatorButton("multiply");
 var divide = new OperatorButton("divide");
 
-Display.prototype.clear();
+Display.clear();
 
 
