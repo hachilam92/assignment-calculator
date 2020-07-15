@@ -196,7 +196,8 @@ class EqualButton extends FunctionButton {
     }
 }
 
-var display = new Display("display");
+window.onload=function(){
+    var display = new Display("display");
 var clearBtn = new ClearButton("clear");
 var equalBtn = new EqualButton("equal");
 var timeBtn = new TimeButton("time");
@@ -215,5 +216,7 @@ var multiply = new OperatorButton("multiply");
 var divide = new OperatorButton("divide");
 
 Display.clear();
+}
+
 
 
