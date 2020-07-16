@@ -1,72 +1,175 @@
-class Calculator {
+window.onload=function(){
 
-    static operatorQueueUpdate(notation){
-        var operator = notation;
-        operatorQueue.push(operator);
-        if(operatorQueue.length >1){
-            clear();
+let display = document.querySelector('.display');
+let expDisplay = document.querySelector('.expression-display');
+let operandQueue = [];
+let operatorQueue = [];
+let input =  '0';
+let expression = '';
+let emptyInput = false;
+let dotExist = false;
+let timeUpdate;
+let timeExist = false;
+
+class Display {
+    static show (content){
+        display.innerHTML = content;
+    }
+
+    static reset(){
+        this.show('0');
+    }
+
+    static expShow(content){
+        expDisplay.innerHTML = content;
+    }
+
+    static expReset(){
+        this.expShow('');
+    }
+
+    static numberInput(addedNumber){
+        if(operatorQueue.length < 1){
+            Memory.operandReset();
         }
-        console.log(this.operatorQueue);  // for test
-    } 
-
-    static operatorQueueReset(){
-        this.operatorQueue = [];
+        return (input === '0')? addedNumber : input + addedNumber;
     }
 
-    static valueQueueUpdate(input) {
-        var operand = parseFloat(input);
-        valueQueue.push(operand);
-        Display.inputReset();
-        Display.emptyFlagReset();
-        console.log(this.valueQueue); // for test
-    }
-
-    static valueQueueReset(){
-        this.valueQueue = [];
-    }
-
-    static validExpression(){
-        if((this.valueQueue.length >1)&&(this.operatorQueue.length >0)){
-            return true;
-        }else{
-            return false;
+    static dotInput(addedSymbol){
+        let added = (dotExist) ? ''
+                : (emptyInput) ? '0.'
+                : addedSymbol;
+        if(!dotExist){
+            dotExist = true;
         }
+        return input + added;
     }
 
-    static  calculate() {
-        var result = 0;
-        if(this.validExpression()){
-            var operand1 = this.valueQueue[0];
-            var operand2 = this.valueQueue[1];
-            switch(this.operatorQueue[0]){
-                case '+':
-                    result = operand1 + operand2;
-                    break;
-                case '-':
-                    result = operand1 - operand2;
-                    break;
-                case '×':
-                    result = operand1 * operand2;
-                    break;
-                case '÷':
-                    result = operand1 / operand2;
-                    break;
-                default:
-                    result = 0;
-            }
-            this.valueQueue = [result];
-        }else{
-            this.valueQueueReset();
+    static inputUpdate(numberButton) {
+        let added = numberButton.textContent;
+        input = (added === '.')? this.dotInput(added):this.numberInput(added);
+        if(emptyInput){
+            emptyInput = !emptyInput;
         }
-        Display.show(result);
-        this.operatorQueueReset();
+        
+        if(operatorQueue.length<1){
+            Memory.expressionReset();
+            Display.expReset();
+        }
+
+        Display.show(input);
+        console.log(input);      // for test
     }
 }
 
-Calculator.valueQueue = [];
-Calculator.operatorQueue = [];
-Calculator.clock;
+class Memory {
+    static inputReset(){
+        input = '0';
+        emptyInput = false;
+        dotExist = false;
+    }
 
+    static inputEmpty(){
+        input = '';
+        emptyInput = true;
+        dotExist = false;
+    }
+
+    static expressionReset(){
+        expression = '';
+    }
+
+    static operandReset(){
+        operandQueue = [];
+    }
+
+    static afterCalc(){
+        return (expression.charAt(expression.length-1) === '=')?true:false;
+    }
+
+    static expNumUpdate(inputString){
+        expression = (this.afterCalc())?` ${inputString}`: expression += ` ${inputString}`;
+    }
+    static expOptUpdate(inputString){
+        let lastChar = parseFloat(expression.slice(-1));
+        if(isNaN(lastChar)){
+            expression = expression.slice(0,-1)
+        }
+        expression += ` ${inputString}`;
+    }
+
+    static operatorReset(){
+        operatorQueue = [];
+    }
+
+    static operandQueueUpdate() {
+        if(!emptyInput){
+            let operand = parseFloat(input);
+            operandQueue.push(operand);
+            this.expNumUpdate(input);
+            Display.expShow(expression);
+            this.inputEmpty();
+            console.log(operandQueue); // for test
+        }
+    }
+
+    static operatorQueueUpdate(operatorButton){
+        let operator = operatorButton.textContent;
+        operatorQueue = [operator];
+        this.expOptUpdate(operator);
+        Display.expShow(expression);
+        console.log(operatorQueue);  // for test
+    }
+
+    static dropTime(){
+        clearInterval(timeUpdate);
+        timeExist = false;
+    }
+
+    static clear() {
+        this.dropTime();
+        this.operandReset();
+        this.operatorReset();
+        this.inputReset();
+        this.expressionReset();
+        Display.reset();
+        Display.expReset();
+    }
+}
+
+class Calculator {
+    static validExpr(){
+        return (((operandQueue.length >1)&&(operatorQueue.length >0))?true:false);
+    }
+
+    static calculate(){
+        let result = 0;
+        let operand1 = operandQueue[0];
+        let operand2 = operandQueue[1];
+        switch(operatorQueue[0]){
+            case '+':
+                result = operand1 + operand2;
+                break;
+            case '-':
+                result = operand1 - operand2;
+                break;
+            case '×':
+                result = operand1 * operand2;
+                break;
+            case '÷':
+                result = operand1 / operand2;
+                break;
+            default:
+                result = 0;
+        }
+        operandQueue = [result];
+        Memory.expNumUpdate(` =`);
+        Display.expShow(expression);
+        Display.show(result);
+        Memory.expNumUpdate(result);
+        Memory.operatorReset();
+    }
+}
 
 class Component {
     constructor(className){
@@ -75,148 +178,99 @@ class Component {
 }
 
 
-class Display extends Component {
-
-    static show(content){
-        this.node.innerHTML = content;
-    }
-
-    static inputUpdate(notation) {
-        var addedValue = notation;
-        this.input += addedValue;
-        if(this.emptyFlag){this.emptyFlag = !this.emptyFlag;}
-        this.show(this.input);
-        console.log(this.input);       // for test
-    }
-
-    static inputReset() {
-        this.input = '';
-    }
-
-    static dropTime(){
-        clearInterval(TimeButton.clock);
-    }
-
-    static emptyFlagReset(){
-        this.emptyFlag = true;
-    }
-
-    static clear(){
-        this.show(this.default);
-        Calculator.valueQueueReset();
-        Calculator.operatorQueueReset();
-        this.inputReset();
-        this.emptyFlagReset();
-        this.dropTime();
-    }
-}
-
-Display.default = '0';
-Display.input = '';
-Display.emptyFlag = true;
-
-class InputButton extends Component {
+class NumberButton extends Component {
     constructor(className){
         super(className);
-        this.notation = this.node.textContent;
-        this.node.addEventListener(
-            'click', function(e) {
-                this.handleClick(e.target.notation);
+        this.node.addEventListener('click', function(e){
+            if(!timeExist){
+                Display.inputUpdate(e.target);
             }
-        );
-    }
+        })
+    } 
 }
 
-class FunctionButton extends Component{
+class OperatorButton extends Component {
     constructor(className){
         super(className);
-        this.node.addEventListener(
-            'click', function() {
-                this.handleClick();
+        this.node.addEventListener('click', function(e){
+            if(!timeExist){
+                Memory.operandQueueUpdate();
+                if(Calculator.validExpr()){
+                    Calculator.calculate();
+                }
+                Memory.operatorQueueUpdate(e.target);
             }
-        );
-    }
+        })
+    } 
 }
 
-class NumberButton extends InputButton {
+class EqualButton extends Component {
     constructor(className){
         super(className);
-        this.handleClick = function(notation) {
-            Display.dropTime();
-            Display.inputUpdate(notation);
-        }
-    }
-}
-
-class OperatorButton extends InputButton {
-    constructor(className){
-        super(className);
-        this.handleClick = function(notation) {
-            if(!Display.emptyFlag){
-                valueQueueUpdate();
-            }
-            if(Calculator.validExpression()){
-                console.log('calculate');    // for test
+        this.node.addEventListener('click', function(e){
+            if(operatorQueue.length > 0){
+                Memory.operandQueueUpdate();
+                if(operandQueue.length < 2){
+                    operandQueue.push(operandQueue[0]);
+                    Memory.expNumUpdate(operandQueue[0]);
+                }
+                Display.expShow(expression);
                 Calculator.calculate();
             }
-            operatorQueueUpdate(notation); 
-        }
-    }
+        })
+    } 
 }
 
-class ClearButton extends FunctionButton {
+class ClearButton extends Component {
     constructor(className){
         super(className);
-        this.handleClick = () => Display.clear();
-    }
+        this.node.addEventListener('click', function(e){
+            Memory.clear();
+        })
+    } 
 }
 
-class TimeButton extends FunctionButton {
+class TimeButton extends Component {
     constructor(className){
         super(className);
-        this.clock;
-        this.handleClick = function(){
-            Display.clear();
-            var setTime = function(){
-                var date = new Date();
-                Display.show(date.toLocaleString());
+        this.node.addEventListener('click', function(e){
+            if(timeExist){
+                Memory.clear();
+            }else{
+                Memory.clear();
+                let setTime = function(){
+                    let date = new Date();
+                    Display.show(date.toLocaleString());
+                };
+                setTime();
+                timeUpdate = setInterval(setTime, 1000);
+                timeExist = true;
             }
-            this.clock = setInterval(setTime, 1000);
-        }
-    }
+        })
+            
+    } 
 }
 
-class EqualButton extends FunctionButton {
-    constructor(className){
-        super(className);
-        this.handleClick = function(){
-            Calculator.valueQueueUpdate();
-            Calculator.calculate();
-        }
-    }
+const one = new NumberButton("one");
+const two = new NumberButton("two");
+const three = new NumberButton("three");
+const four = new NumberButton("four");
+const five = new NumberButton("five");
+const six = new NumberButton("six");
+const seven = new NumberButton("seven");
+const eight = new NumberButton("eight");
+const nine = new NumberButton("nine");
+const dot = new NumberButton("dot");
+
+const add = new OperatorButton("add");
+const subtract = new OperatorButton("subtract");
+const multiply = new OperatorButton("multiply");
+const divide = new OperatorButton("divide");
+
+const equal = new EqualButton("equal");
+const clear = new ClearButton("clear");
+const time = new TimeButton("time");
+
+Memory.clear();
 }
-
-window.onload=function(){
-    var display = new Display("display");
-var clearBtn = new ClearButton("clear");
-var equalBtn = new EqualButton("equal");
-var timeBtn = new TimeButton("time");
-var one = new NumberButton("one");
-var two = new NumberButton("two");
-var three = new NumberButton("three");
-var four = new NumberButton("four");
-var five = new NumberButton("five");
-var six = new NumberButton("six");
-var seven = new NumberButton("seven");
-var eight = new NumberButton("eight");
-var nine = new NumberButton("nine");
-var add = new OperatorButton("add");
-var subtract = new OperatorButton("subtract");
-var multiply = new OperatorButton("multiply");
-var divide = new OperatorButton("divide");
-
-Display.clear();
-}
-
-
-
+    

@@ -1,8 +1,9 @@
-$dark-blue: #12283d;
-$red:rgb(202, 61, 61);
-$light-blue:rgb(133, 133, 240);
-$yellow:rgb(202, 202, 59);
-$grey:grey;
+$light-dark: #6d807f;
+$light-bright: #aec1bc;
+$bright: #cddad1;
+$dark: #4f595c;
+
+
 
 @mixin button-hover($color){
     &:hover{
@@ -16,49 +17,68 @@ $grey:grey;
     }
 }
 
+.calculator{
+    margin-left: 22%;
+    margin-top: 3%;
+}
 
-.display{
-    background-color: $dark-blue;
+.display-frame{
+    background-color: $light-dark;
 }
-.time, .equal{
-    background-color:$light-blue;
-    @include button-hover($light-blue);
-    @include button-click($light-blue);
+
+.time, .clear, .operator{
+    background-color: $light-bright;
+    @include button-hover($light-bright);
+    @include button-click($light-bright);
 }
-.clear{
-    background-color:$red;
-    @include button-hover($red);
-    @include button-click($red);
+
+.number {
+    background-color: $bright;
+    @include button-hover($bright);
+    @include button-click($bright);
 }
-.number{
-    background-color:$grey;
-    @include button-hover($grey);
-    @include button-click($grey);
-}
-.operator{
-    background-color:$yellow;
-    @include button-hover($yellow);
-    @include button-click($yellow);
+
+.equal{
+    background-color: $dark;
+    @include button-hover($dark);
+    @include button-click($dark);
+    color: white;
 }
 
 
 .calculator{
     width:440px;
     height: 480px;
-    font-family: 'Open Sans', sans-serif;
+    // font-family: 'Open Sans', sans-serif;
     font-family: 'Roboto', sans-serif;
     font-size: 20px;
-    color: white;
+    color: $dark;
+}
+
+.expression-display{
+    width: 100%;
+    height: 30px;
+    line-height: 30px;
+    font-size: 15px;
 }
 
 .display{
     width: 100%;
+    height: 50px;
+    line-height: 50px;
+}
+
+.display-frame{
+    width: 100%;
+    height: 80px;
     text-align: right;
     padding-right: 5%;
     font-size: 30px;
     word-wrap: break-word;
     word-break: break-all;
     overflow: hidden;
+    border-radius: 10px;
+    color: white;
 }
 
 .clock-icon{
@@ -66,16 +86,13 @@ $grey:grey;
     height: 50%;
 }
 
-
 .btn{
     text-align: center;
     width:110px;
     height:80px;
     cursor: pointer;
+    border-radius: 10px;
 }
 
-.black{
-    background-color: black;
-}
 
 
