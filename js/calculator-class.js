@@ -251,6 +251,7 @@ class TimeButton extends Component {
     } 
 }
 
+const zero = new NumberButton("zero");
 const one = new NumberButton("one");
 const two = new NumberButton("two");
 const three = new NumberButton("three");
